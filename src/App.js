@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import localforage from 'localforage';
+import Todo from "./Todo";
+import localforage from "localforage";
 
 function App() {
   const [todos, setTodos] = useState([]);
 
   const [value, setValue] = useState("");
 
-  useEffect(()=>{
-    localforage.setItem('todos',todos)
-  },[todos])
+  useEffect(() => {
+    localforage.setItem("todos", todos);
+  }, [todos]);
 
-  useEffect(()=>{
-    localforage.getItem('todos', (_,value)=>{
-      setTodos(value)
-    })
-  },[])
+  useEffect(() => {
+    localforage.getItem("todos", (_, value) => {
+      if (value) setTodos(value);
+    });
+  }, []);
 
   const onValueChange = ({ target: { value } }) => {
     setValue(value);
@@ -25,7 +26,11 @@ function App() {
     if (value !== "") {
       setTodos([
         ...todos,
-        { name: value, status: false, id: todos.length + 1 }
+        {
+          name: value,
+          status: false,
+          id: Date.now() + Math.random()
+        }
       ]);
       setValue("");
     }
@@ -70,17 +75,11 @@ function App() {
         {todos
           .filter(todo => !todo.status)
           .map(todo => (
-            <li key={todo.id}>
-              <input
-                type="checkbox"
-                checked={todo.status}
-                onChange={() => handleCheckboxChange(todo.id)}
-              />
-              <label>{todo.name}</label>
-              <button className="delete" onClick={() => deleteTodo(todo.id)}>
-                Delete
-              </button>
-            </li>
+            <Todo
+              todo={todo}
+              handleCheckboxChange={handleCheckboxChange}
+              deleteTodo={deleteTodo}
+            />
           ))}
       </ul>
 
@@ -89,17 +88,11 @@ function App() {
         {todos
           .filter(todo => todo.status)
           .map(todo => (
-            <li key={todo.id}>
-              <input
-                type="checkbox"
-                checked={todo.status}
-                onChange={() => handleCheckboxChange(todo.id)}
-              />
-              <label>{todo.name}</label>
-              <button className="delete" onClick={() => deleteTodo(todo.id)}>
-                Delete
-              </button>
-            </li>
+            <Todo
+              todo={todo}
+              handleCheckboxChange={handleCheckboxChange}
+              deleteTodo={deleteTodo}
+            />
           ))}
       </ul>
     </div>
