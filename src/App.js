@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
+import localforage from 'localforage';
 
 function App() {
-  const [todos, setTodos] = useState([
-    { name: "Do pushups", status: true, id: 1 },
-    { name: "Do situps", status: false, id: 2 }
-  ]);
+  const [todos, setTodos] = useState([]);
 
   const [value, setValue] = useState("");
+
+  useEffect(()=>{
+    localforage.setItem('todos',todos)
+  },[todos])
+
+  useEffect(()=>{
+    localforage.getItem('todos', (_,value)=>{
+      setTodos(value)
+    })
+  },[])
 
   const onValueChange = ({ target: { value } }) => {
     setValue(value);
