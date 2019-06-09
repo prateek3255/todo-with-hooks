@@ -3,8 +3,8 @@ import "./App.css";
 
 function App() {
   const [todos, setTodos] = useState([
-    { name: "Do pushups", status: true },
-    { name: "Do situps", status: false }
+    { name: "Do pushups", status: true, id: 1 },
+    { name: "Do situps", status: false, id: 2 }
   ]);
 
   const [value, setValue]= useState("");
@@ -15,7 +15,7 @@ function App() {
 
   const addTodo = ()=>{
     if(value!==""){
-      setTodos([...todos, {name:value, status:false}])
+      setTodos([...todos, {name:value, status:false, id: todos.length + 1}])
       setValue("")
     }
   }
@@ -24,7 +24,15 @@ function App() {
     if(key==='Enter'){
       addTodo()
     }
-  } 
+  }
+  
+  const handleCheckboxChange = (id)=>{
+    setTodos(todos.map(todo=>{
+      if(todo.id===id)
+        return {...todo, status: !todo.status};
+      return todo;
+    }))
+  }
 
   return (
     <div className="container">
@@ -38,9 +46,9 @@ function App() {
       <ul id="incomplete-tasks">
         {todos
           .filter(todo => !todo.status)
-          .map((todo,i) => (
-            <li key={i}>
-              <input type="checkbox" />
+          .map(todo => (
+            <li key={todo.id}>
+              <input type="checkbox" checked={todo.status} onChange={()=>handleCheckboxChange(todo.id)}/>
               <label>{todo.name}</label>
               <button className="delete">Delete</button>
             </li>
@@ -51,9 +59,9 @@ function App() {
       <ul id="completed-tasks">
       {todos
           .filter(todo => todo.status)
-          .map((todo,i) => (
-            <li key={i}>
-              <input type="checkbox"  checked/>
+          .map(todo => (
+            <li key={todo.id}>
+              <input type="checkbox" checked={todo.status} onChange={()=>handleCheckboxChange(todo.id)}/>
               <label>{todo.name}</label>
               <button className="delete">Delete</button>
             </li>
