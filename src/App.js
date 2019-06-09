@@ -6,12 +6,32 @@ function App() {
     { name: "Do pushups", status: true },
     { name: "Do situps", status: false }
   ]);
+
+  const [value, setValue]= useState("");
+
+  const onValueChange = ({target:{value}})=>{
+    setValue(value)
+  }
+
+  const addTodo = ()=>{
+    if(value!==""){
+      setTodos([...todos, {name:value, status:false}])
+      setValue("")
+    }
+  }
+
+  const handleKeyPress = ({key})=>{
+    if(key==='Enter'){
+      addTodo()
+    }
+  } 
+
   return (
     <div className="container">
       <p>
         <label>Add Item</label>
-        <input id="new-task" type="text" />
-        <button>Add</button>
+        <input id="new-task" type="text" value={value} name="todoField" onKeyDown={handleKeyPress} onChange={onValueChange}/>
+        <button onClick={addTodo}>Add</button>
       </p>
 
       <h3>Todo</h3>
